@@ -1,0 +1,4 @@
+* This little program is used for telnetting into a switch
+import telnetlib
+HOST="192.168.178.25"
+tn=telnetlib.Telnet(HOST)
