@@ -1,2 +1,2 @@
 Ausfuehrung via : python3 render_template.py template.jinja2 router2.yaml
-Das isrt der erste Versuch, eine Konfiguration aus einem YAML file auszulesen und dann eine Konfig zu erstellen
+Das ist der erste Versuch, eine Konfiguration aus einem YAML file auszulesen und dann eine Konfig zu erstellen
