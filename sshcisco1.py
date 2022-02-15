@@ -17,7 +17,7 @@ ssh.connect(router_ip,
             look_for_keys=False )
 
 # Run command.
-ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("show ip route")
+ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command("write config")
 
 output = ssh_stdout.readlines()
 # Close connection.
@@ -25,6 +25,6 @@ ssh.close()
 
 # Analyze show ip route output
 for line in output:
-    if "0.0.0.0/0" in line:
-        print("Found default route:")
+    if "loopback" in line:
+        print("Found loopback")
         print(line)
