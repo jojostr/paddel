@@ -1,0 +1,187 @@
+Building configuration...
+
+Current configuration : 4586 bytes
+!
+! Last configuration change at 10:12:28 UTC Tue Feb 15 2022 by josef
+! NVRAM config last updated at 10:28:11 UTC Sat Feb 12 2022 by josef
+!
+version 12.2
+no service pad
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname RouterNuernberg
+!
+boot-start-marker
+boot-end-marker
+!
+enable secret 5 $1$m/da$pWJamwiGpHc5AaPEz/0yD/
+!
+username josef privilege 15 password 0 josef
+username bob privilege 15 password 0 hello
+aaa new-model
+!
+!
+aaa group server radius RadiusGrp
+ server-private 192.168.178.50 auth-port 1812 acct-port 1813 key testing123
+!
+aaa authorization exec default group RadiusGrp local 
+aaa accounting exec default start-stop group RadiusGrp
+aaa accounting system default start-stop group RadiusGrp
+!
+!
+!
+aaa session-id common
+system mtu routing 1500
+vtp mode transparent
+ip subnet-zero
+ip routing
+no ip domain-lookup
+no ip dhcp use vrf connected
+ip dhcp excluded-address 192.168.210.1 192.168.210.215
+ip dhcp excluded-address 192.168.210.220 192.168.210.254
+!
+ip dhcp pool PHONES
+   network 192.168.210.0 255.255.255.0
+   default-router 192.168.210.1 
+   option 150 ip 192.168.200.5 
+   dns-server 192.168.200.10 
+!
+ip dhcp pool DATA
+   network 192.168.205.0 255.255.255.0
+   default-router 192.168.205.1 
+   dns-server 192.168.200.10 
+!
+!
+!
+!
+crypto pki trustpoint TP-self-signed-3206987136
+ enrollment selfsigned
+ subject-name cn=IOS-Self-Signed-Certificate-3206987136
+ revocation-check none
+ rsakeypair TP-self-signed-3206987136
+!
+!
+crypto pki certificate chain TP-self-signed-3206987136
+ certificate self-signed 01
+  3082023F 308201A8 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  31312F30 2D060355 04031326 494F532D 53656C66 2D536967 6E65642D 43657274 
+  69666963 6174652D 33323036 39383731 3336301E 170D3933 30333031 30303031 
+  30305A17 0D323030 31303130 30303030 305A3031 312F302D 06035504 03132649 
+  4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D33 32303639 
+  38373133 3630819F 300D0609 2A864886 F70D0101 01050003 818D0030 81890281 
+  8100D4DA 5B109A8B 5C8C7E69 6EBA8EF8 639B4FD7 297E181E A6226094 6F7C82D2 
+  C3E580C7 33CF8E57 FCC170D8 ECB3531B 17BF1B1A 0CB7679D FC54A1F5 8767219A 
+  E4F9B712 ACB8AFA2 C23A8F87 00905514 0697B9CC F998258D F47420B7 EDE21715 
+  93ADA32E F86094DD 1C226C47 A6913636 DE09D3F3 E16F01A4 07C1C504 0B4B9741 
+  F8C70203 010001A3 67306530 0F060355 1D130101 FF040530 030101FF 30120603 
+  551D1104 0B300982 07535733 3536302E 301F0603 551D2304 18301680 1435F6BD 
+  D01AC078 A6DCC27D E3DBA8F5 6A6E1323 BC301D06 03551D0E 04160414 35F6BDD0 
+  1AC078A6 DCC27DE3 DBA8F56A 6E1323BC 300D0609 2A864886 F70D0101 04050003 
+  81810057 C14A9F80 97DF0DB4 9BF66AE2 E19F8379 B3EBEB21 50B35BCD D358B6B9 
+  D3D209B8 409BB45D 1CA90005 1B997E29 9007D44C 7AF0FE09 99369AE3 32DD1B71 
+  FEBC6A72 E858C50E 68B4ED48 E772D54A CF54AF21 5D6FE215 C6C1839F 28CD4E5A 
+  83A680A3 119FF45B 23B96A42 8DB1BF81 A48F403A 3744D668 B80B9632 9DC495D0 B077EF
+  quit
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+spanning-tree extend system-id
+!
+vlan internal allocation policy ascending
+!
+vlan 177
+ name VM_Infrastructure
+!
+vlan 179 
+!
+vlan 200
+ name Collab_Server
+!
+vlan 205
+ name DATA
+!
+vlan 210
+ name VOICE
+!
+!
+!
+!
+interface Loopback0
+ ip address 1.13.1.1 255.255.255.0
+!
+interface FastEthernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ spanning-tree portfast trunk
+!
+interface FastEthernet0/2
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ spanning-tree portfast trunk
+!
+interface FastEthernet0/3
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ spanning-tree portfast trunk
+!
+interface FastEthernet0/4
+ description FOR MICROTIK AP
+ switchport access vlan 205
+ spanning-tree portfast
+!
+interface FastEthernet0/5
+ description PORT FOR PHONE
+ switchport access vlan 205
+ switchport voice vlan 210
+ spanning-tree portfast
+!
+interface FastEthernet0/6
+ description PORT FOR PHONE
+ switchport access vlan 205
+ switchport voice vlan 210
+ spanning-tree portfast
+!
+interface FastEthernet0/7
+!
+interface FastEthernet0/8
+!
+interface GigabitEthernet0/1
+!
+interface Vlan1
+ ip address 192.168.178.25 255.255.255.0
+!
+interface Vlan200
+ ip address 1.1.1.1 255.255.255.0
+!
+interface Vlan205
+ ip address 192.168.205.1 255.255.255.0
+!
+interface Vlan210
+ description Gateway Voice Vlan
+ ip address 192.168.210.1 255.255.255.0
+!
+ip classless
+ip http server
+ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+line con 0
+line vty 0 4
+ password Virt179!
+ transport input telnet ssh
+line vty 5 15
+!
+ntp clock-period 36029416
+ntp server 11.11.11.11
+ntp server 192.168.178.1
+end

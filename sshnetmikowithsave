@@ -1,5 +1,5 @@
 #Hier soll dann auch mal was in einen File geschrieben werden.
-# mit dem module datetime besorgen wir uns eine timestamp,die formatieren wir sinnvoll
+
 import netmiko
 from netmiko import ConnectHandler
 import datetime
@@ -10,16 +10,29 @@ iosv_l2 = {
     'password': 'josef',
     'secret': 'cisco',
 }
+
 net_connect =ConnectHandler(**iosv_l2)
 net_connect.enable()
-output =net_connect.send_command('show ip int brief')
-print(output)
-config_commands = [ 'int loop 0', 'ip address 1.13.1.1 255.255.255.0', 'no sh']
-output = net_connect.send_config_set(config_commands)
-print (output)
-output =net_connect.send_command('show ip int brief')
-print (output)
-time_now = datetime.datetime.now().isoformat(timespec="seconds")
-time_now
-# Finally close the connection, ist das schoener?
+
+
+#Discover the hostname from the running config
+hostname = net_connect.send_command('show run | include host')
+#hier zeigt er noch die ganze zeile an:
+print(hostname)
+hostname.split(" ")
+hostname,device = hostname.split(" ")
+print ("Backing up " + device)
+filename = device + '.txt'
+showrun = net_connect.send_command('show run')
+showvlan = net_connect.send_command('show vlan')
+showver = net_connect.send_command('show ver')
+log_file = open(filename, "a")   # in append mode
+log_file.write(showrun)
+log_file.write("\n")
+log_file.write(showvlan)
+log_file.write("\n")
+log_file.write(showver)
+log_file.write("\n")
+
+# Finally close the connection, kann ja nicht schaden
 # net_connect.disconnect()
