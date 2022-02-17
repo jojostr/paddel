@@ -1,0 +1,4 @@
+class Dog:
+    pass
+jack=Dog()
+print(type(jack))
